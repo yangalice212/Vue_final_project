@@ -1,3 +1,5 @@
+gh-pages: https://yangalice212.github.io/Vue_final_project/dist/#/
+
 # vue_final_project
 
 ## Project setup
