@@ -1,4 +1,5 @@
 <template>
+  <Loading :isLoading="isLoading"/>
   <div class="container">
     <div class="text-end my-4">
       <button
@@ -12,46 +13,49 @@
         刪除全部優惠卷
       </button>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>優惠卷名稱</th>
-          <th>折價</th>
-          <th>到期日</th>
-          <th width="120">狀態</th>
-          <th width="150">編輯 / 刪除</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in coupons" :key="item.id">
-          <td>{{ item.title }}</td>
-          <td>{{ item.percent }}%</td>
-          <td>{{ new Date(item.due_date * 1000).toISOString().split("T")[0] }}</td>
-          <td>
-            <span v-if="item.is_enabled" class="text-success">啟用</span>
-            <span v-else>未啟用</span>
-          </td>
-          <td>
-            <div class="btn-group">
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary"
-                @click="openModal(item, 'edit')"
-              >
-                編輯
-              </button>
-              <button
-                type=" button"
-                class="btn btn-sm btn-outline-danger"
-                @click="delCoupon(item.id)"
-              >
-                刪除
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table" style="min-width: 550px;">
+        <thead>
+          <tr>
+            <th>優惠卷名稱</th>
+            <th>折價</th>
+            <th>到期日</th>
+            <th width="120">狀態</th>
+            <th width="150">編輯 / 刪除</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in coupons" :key="item.id">
+            <td>{{ item.title }}</td>
+            <td>{{ item.percent }}%</td>
+            <td>{{ new Date(item.due_date * 1000).toISOString().split("T")[0] }}</td>
+            <td>
+              <span v-if="item.is_enabled" class="text-success">啟用</span>
+              <span v-else>未啟用</span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  @click="openModal(item, 'edit')"
+                >
+                  編輯
+                </button>
+                <button
+                  type=" button"
+                  class="btn btn-sm btn-outline-danger"
+                  @click="delCoupon(item.id)"
+                >
+                  刪除
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
   <div class="d-flex justify-content-center">
     <Pagination
@@ -108,17 +112,20 @@ export default {
       }
     },
     getCoupons(page = 1) {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupons?page=${page}`;
       this.$http.get(url).then((res) => {
         if (res.data.success) {
           this.coupons = res.data.coupons;
           this.pagination = res.data.pagination;
+          this.isLoading = false;
         } else {
           alert(res.data.message);
         }
       });
     },
     updateCoupon() {
+      this.isLoading = true;
       const { couponModal } = this.$refs;
       const method = this.isNew ? 'post' : 'put';
       const id = this.isNew ? '' : `${this.tempCoupon.id}`;
@@ -150,8 +157,10 @@ export default {
         cancelButtonText: '取消',
       }).then((result) => {
         if (result.isConfirmed) {
+          this.isLoading = true;
           this.$http.delete(url).then((res) => {
             if (res.data.success) {
+              this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
               this.getProducts();
             } else {
@@ -176,8 +185,10 @@ export default {
         cancelButtonText: '取消',
       }).then((result) => {
         if (result.isConfirmed) {
+          this.isLoading = true;
           this.$http.delete(url).then((res) => {
             if (res.data.success) {
+              this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
               this.getProducts();
             } else {

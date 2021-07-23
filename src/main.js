@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import 'bootstrap';
 import {
   Field, Form, ErrorMessage, defineRule, configure,
 } from 'vee-validate';
@@ -17,12 +18,12 @@ Object.keys(rules).forEach((rule) => {
   defineRule(rule, rules[rule]);
 });
 
-// Activate the locale
 configure({
   generateMessage: localize({ zh_TW: zhTW }),
-  validateOnInput: true, // 調整為輸入字元立即進行驗證
+  validateOnInput: true,
 });
 setLocale('zh_TW');
+
 const options = {
   confirmButtonColor: '#3085d6',
 };

@@ -17,11 +17,48 @@
         <div class="navbar-nav ms-auto">
           <router-link to="/" class="nav-link">About</router-link>
           <router-link to="/products" class="nav-link">Products</router-link>
-          <router-link to="/cart" class="nav-link">Cart</router-link>
+          <router-link to="/cart" class="nav-link">Cart({{ cart.qty }})</router-link>
           <router-link to="/login" class="nav-link">Admin</router-link>
         </div>
       </div>
     </div>
   </nav>
   <router-view></router-view>
+  <footer class="bg-dark text-white py-3 text-center">here is footer</footer>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      cart: {},
+    };
+  },
+  methods: {
+    getCart() {
+      this.isLoading = true;
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+      this.$http
+        .get(url)
+        .then((res) => {
+          console.log(this.cart);
+          if (res.data.success) {
+            console.log(res);
+            this.cart = res.data.data.carts;
+            console.log(this.cart);
+            this.isLoading = false;
+          } else {
+            alert(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    mounted() {
+      this.getCart();
+      console.log('ddd');
+    },
+  },
+};
+</script>

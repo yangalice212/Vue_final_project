@@ -1,5 +1,5 @@
 <template>
-  <Loading :isLoading="isLoading"></Loading>
+  <Loading :isLoading="isLoading"/>
   <div class="container">
     <div class="row">
       <div class="col-md-3"></div>
@@ -92,6 +92,7 @@ export default {
       this.$router.push(`/product/${id}`);
     },
     addCart(id, qty = 1) {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       const cart = {
         product_id: id,
@@ -102,6 +103,7 @@ export default {
         .then((res) => {
           console.log(res);
           if (res.data.success) {
+            this.isLoading = false;
             this.$swal({
               icon: 'success',
               title: res.data.message,
@@ -116,12 +118,14 @@ export default {
         });
     },
     addFavor(id) {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       this.$http
         .post(url, id)
         .then((res) => {
           console.log(res);
           if (res.data.success) {
+            this.isLoading = false;
             this.$swal({
               icon: 'success',
               title: '已加入我的最愛',

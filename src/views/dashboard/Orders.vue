@@ -1,4 +1,5 @@
 <template>
+  <Loading :isLoading="isLoading"/>
   <div class="container">
     <div class="text-end my-4">
       <button
@@ -9,89 +10,92 @@
         刪除全部訂單
       </button>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th width="120">購買時間</th>
-          <th width="200">訂單編號</th>
-          <th width="110">購買人姓名</th>
-          <th width="150">購買人電話</th>
-          <th width="120">應付金額</th>
-          <th width="100">訂單狀態</th>
-          <th width="100">查看訂單</th>
-          <th width="150">編輯 / 刪除</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in orders" :key="item.id">
-          <td>
-            {{ new Date(item.create_at * 1000).toISOString().split("T")[0] }}
-          </td>
-          <td>
-            {{ item.id }}
-          </td>
-          <td>{{ item.user.name }}</td>
-          <td>{{ item.user.tel }}</td>
-          <td>{{ item.total }}</td>
-          <td>
-            <div
-              v-if="!item.is_paid && item.status !== 'cancel'"
-              class="btn btn-sm btn-outline-info"
-              @click="openModal(item, 'status')"
-            >
-              等待付款中
-            </div>
-            <div
-              v-if="item.is_paid  && item.status !== 'finish'  && item.status !== 'cancel'"
-              class="btn btn-sm btn-outline-primary"
-              @click="openModal(item, 'status')"
-            >
-              處理中
-            </div>
-            <div
-              v-if="item.status === 'finish'"
-              class="btn btn-sm btn-outline-success"
-              @click="openModal(item, 'status')"
-            >
-              完成
-            </div>
-            <div
-              v-if="item.status === 'cancel'"
-              class="btn btn-sm btn-outline-secondary"
-              @click="openModal(item, 'status')"
-            >
-              取消
-            </div>
-          </td>
-          <td>
-            <button
-              class="btn btn-sm btn-outline-secondary"
-              @click="openModal(item, 'detail')"
-            >
-              查看
-            </button>
-          </td>
-          <td>
-            <div class="btn-group">
-              <button
-                type="button"
+    <div class="table-responsive-lg">
+      <table class="table" style="min-width: 900px;">
+        <thead>
+          <tr>
+            <th>購買時間</th>
+            <th>訂單編號</th>
+            <th class="d-none d-md-table-cell">購買人姓名</th>
+            <th class="d-none d-md-table-cell">購買人電話</th>
+            <th class="d-none d-md-table-cell">應付金額</th>
+            <th>訂單狀態</th>
+            <th>查看訂單</th>
+            <th>編輯 / 刪除</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in orders" :key="item.id">
+            <td>
+              {{ new Date(item.create_at * 1000).toISOString().split("T")[0] }}
+            </td>
+            <td>
+              {{ item.id }}
+            </td>
+            <td class="d-none d-md-table-cell">{{ item.user.name }}</td>
+            <td class="d-none d-md-table-cell">{{ item.user.tel }}</td>
+            <td class="d-none d-md-table-cell">{{ item.total }}</td>
+            <td>
+              <div
+                v-if="!item.is_paid && item.status !== 'cancel'"
+                class="btn btn-sm btn-outline-info"
+                @click="openModal(item, 'status')"
+              >
+                等待付款中
+              </div>
+              <div
+                v-if="item.is_paid  && item.status !== 'finish'  && item.status !== 'cancel'"
+                class="btn btn-sm btn-outline-primary"
+                @click="openModal(item, 'status')"
+              >
+                處理中
+              </div>
+              <div
+                v-if="item.status === 'finish'"
+                class="btn btn-sm btn-outline-success"
+                @click="openModal(item, 'status')"
+              >
+                完成
+              </div>
+              <div
+                v-if="item.status === 'cancel'"
                 class="btn btn-sm btn-outline-secondary"
-                @click="openModal(item, 'edit')"
+                @click="openModal(item, 'status')"
               >
-                編輯
-              </button>
+                取消
+              </div>
+            </td>
+            <td>
               <button
-                type=" button"
-                class="btn btn-sm btn-outline-danger"
-                @click="delOrder(item.id)"
+                class="btn btn-sm btn-outline-secondary"
+                @click="openModal(item, 'detail')"
               >
-                刪除
+                查看
               </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  @click="openModal(item, 'edit')"
+                >
+                  編輯
+                </button>
+                <button
+                  type=" button"
+                  class="btn btn-sm btn-outline-danger"
+                  @click="delOrder(item.id)"
+                >
+                  刪除
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
   <div class="d-flex justify-content-center">
     <Pagination
@@ -131,6 +135,7 @@ export default {
       status: '',
       tempOrder: {},
       pagination: {},
+      isLoading: false,
     };
   },
   components: {
@@ -144,6 +149,7 @@ export default {
   },
   methods: {
     getOrders(page = 1) {
+      this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`;
       this.$http
         .get(url)
@@ -151,6 +157,7 @@ export default {
           if (res.data.success) {
             this.orders = res.data.orders;
             this.pagination = res.data.pagination;
+            this.isLoading = false;
           } else {
             alert(res.data.message);
           }
@@ -221,8 +228,10 @@ export default {
         cancelButtonText: '取消',
       }).then((result) => {
         if (result.isConfirmed) {
+          this.isLoading = true;
           this.$http.delete(url).then((res) => {
             if (res.data.success) {
+              this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
               this.getOrders();
             } else {
@@ -247,8 +256,10 @@ export default {
         cancelButtonText: '取消',
       }).then((result) => {
         if (result.isConfirmed) {
+          this.isLoading = true;
           this.$http.delete(url).then((res) => {
             if (res.data.success) {
+              this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
               this.getOrders();
             } else {

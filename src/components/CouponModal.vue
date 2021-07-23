@@ -49,14 +49,17 @@
           </div>
           <div class="mb-3">
             <label for="price">折扣(請輸入百分比)</label>
-            <input
-              type="number"
-              class="form-control"
-              id="price"
-              min="0"
-              v-model.number="tempCoupon.percent"
-              placeholder="請輸入折扣百分比"
-            />
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                id="price"
+                min="0"
+                v-model.number="tempCoupon.percent"
+                placeholder="請輸入折扣百分比"
+              />
+              <div class="input-group-text">%</div>
+            </div>
           </div>
           <div class="mb-3">
             <div class="form-check">

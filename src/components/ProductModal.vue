@@ -26,12 +26,25 @@
             <div class="col-sm-4">
               <div class="mb-1">
                 <div class="form-group">
-                  <label for="imageUrl">主要圖片</label>
-                  <input id="imageUrl"
-                    v-model="tempProduct.imageUrl"
-                    type="text"
-                    class="form-control"
-                    placeholder="請輸入圖片連結">
+                  <div class="input-group mb-1">
+                    <input
+                      @change="getImgData"
+                      id="imageUrl"
+                      type="file"
+                      accept=".jpg, .png"
+                      class="form-control"
+                      placeholder="drag picture to here"
+                      ref="imageUrl"
+                    />
+                    <button
+                      @click="uploadImg"
+                      :disabled="!imgData"
+                      class="btn btn-sm btn-outline-success flex-shrink-0"
+                      type="button"
+                    >
+                      確定上傳
+                    </button>
+                  </div>
                   <img class="img-fluid" :src="tempProduct.imageUrl">
                 </div>
               </div>
@@ -205,7 +218,6 @@ export default {
       const formData = new FormData();
       formData.append('file-to-upload', file);
       this.imgData = formData;
-      console.log(this.$refs);
     },
     uploadImg() {
       this.$http
@@ -217,9 +229,9 @@ export default {
           if (res.data.success) {
             this.imgData = null;
             this.$refs.imageUrl.value = '';
-            if (this.action === 'new') {
+            if (this.isNew === 'new') {
               this.tempProduct.imageUrl = res.data.imageUrl;
-            } else if (this.action === 'edit') {
+            } else if (this.isNew === 'edit') {
               this.tempProduct.imagesUrl.push(res.data.imageUrl);
             }
           } else {

@@ -1,4 +1,5 @@
 <template>
+  <Loading :isLoading="isLoading"/>
   <div class="container">
     <div class="text-end my-4">
       <button
@@ -12,57 +13,60 @@
         刪除全部產品
       </button>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>產品圖片</th>
-          <th>產品名稱</th>
-          <th>原價</th>
-          <th>售價</th>
-          <th width="120">狀態</th>
-          <th width="150">編輯 / 刪除</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in products" :key="item.id">
-          <td>
-            <div
-                style="
-                  height: 100px;
-                  background-size: cover;
-                  background-position: center;
-                "
-                :style="{ 'background-image': `url(${item.imageUrl})` }"
-              ></div>
-          </td>
-          <td>{{ item.title }}</td>
-          <td>NT$ {{ item.price }}</td>
-          <td>NT$ {{ item.origin_price }}</td>
-          <td>
-            <span v-if="item.is_enabled" class="text-success">啟用</span>
-            <span v-else>未啟用</span>
-          </td>
-          <td>
-            <div class="btn-group">
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-secondary"
-                @click="openModal(item, 'edit')"
-              >
-                編輯
-              </button>
-              <button
-                type=" button"
-                class="btn btn-sm btn-outline-danger"
-                @click="delProduct(item.id)"
-              >
-                刪除
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table" style="min-width: 600px;">
+        <thead>
+          <tr>
+            <th class="d-none d-md-table-cell">產品圖片</th>
+            <th>產品名稱</th>
+            <th>原價</th>
+            <th>售價</th>
+            <th width="120">狀態</th>
+            <th width="150">編輯 / 刪除</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in products" :key="item.id">
+            <td class="d-none d-md-table-cell">
+              <div
+                  style="
+                    height: 100px;
+                    background-size: cover;
+                    background-position: center;
+                  "
+                  :style="{ 'background-image': `url(${item.imageUrl})` }"
+                ></div>
+            </td>
+            <td>{{ item.title }}</td>
+            <td>NT$ {{ item.price }}</td>
+            <td>NT$ {{ item.origin_price }}</td>
+            <td>
+              <span v-if="item.is_enabled" class="text-success">啟用</span>
+              <span v-else>未啟用</span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  @click="openModal(item, 'edit')"
+                >
+                  編輯
+                </button>
+                <button
+                  type=" button"
+                  class="btn btn-sm btn-outline-danger"
+                  @click="delProduct(item.id)"
+                >
+                  刪除
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
   <div class="d-flex justify-content-center">
     <Pagination
@@ -102,12 +106,16 @@ export default {
   },
   methods: {
     getProducts(page = 1) {
+      this.isLoading = true;
+      console.log(this.isLoading);
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
       this.$http.get(url)
         .then((res) => {
           if (res.data.success) {
             this.products = res.data.products;
             this.pagination = res.data.pagination;
+            this.isLoading = false;
+            console.log(this.isLoading);
           } else {
             this.$swal({
               title: res.data.message,
@@ -137,6 +145,7 @@ export default {
       }
     },
     updateProduct() {
+      this.isLoading = true;
       const { productModal } = this.$refs;
       const method = this.isNew ? 'post' : 'put';
       const id = this.isNew ? '' : `${this.tempProduct.id}`;
@@ -176,8 +185,10 @@ export default {
         cancelButtonText: '取消',
       }).then((result) => {
         if (result.isConfirmed) {
+          this.isLoading = true;
           this.$http.delete(url).then((res) => {
             if (res.data.success) {
+              this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
               this.getProducts();
             } else {
@@ -202,8 +213,10 @@ export default {
         cancelButtonText: '取消',
       }).then((result) => {
         if (result.isConfirmed) {
+          this.isLoading = true;
           this.$http.delete(url).then((res) => {
             if (res.data.success) {
+              this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
               this.getProducts();
             } else {
