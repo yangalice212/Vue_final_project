@@ -115,7 +115,6 @@ export default {
             this.products = res.data.products;
             this.pagination = res.data.pagination;
             this.isLoading = false;
-            console.log(this.isLoading);
           } else {
             this.$swal({
               title: res.data.message,

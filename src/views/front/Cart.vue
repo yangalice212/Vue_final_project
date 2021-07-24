@@ -78,18 +78,19 @@
                     type="text"
                     class="form-control"
                     placeholder="輸入優惠卷代碼"
+                    v-model="couponCode"
                   />
                   <button
                     class="btn btn-outline-secondary"
                     type="button"
-                    @click="useCoupon"
+                    @click="useCoupon(couponCode)"
                   >
                     套用優惠卷
                   </button>
                 </div>
               </td>
             </tr>
-            <tr>
+            <tr v-if="carts.final_total !== carts.total">
               <td colspan="3" class="text-end text-success">折扣價</td>
               <td class="text-end text-success">NT$ {{ carts.final_total }}</td>
             </tr>
@@ -115,6 +116,8 @@
 </template>
 
 <script>
+import emitter from '../../assets/js/emitter';
+
 export default {
   name: 'Cart',
   data() {
@@ -123,6 +126,7 @@ export default {
       carts: {},
       isLoading: false,
       qty: 1,
+      couponCode: '',
     };
   },
   methods: {
@@ -184,6 +188,27 @@ export default {
         });
       }
     },
+    useCoupon(code) {
+      this.couponCode = code;
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`;
+      this.$http.post(url, { data: { code } })
+        .then((res) => {
+          if (res.data.success) {
+            this.getCart();
+            this.$swal(res.data.message, '', 'success');
+          } else {
+            this.$swal({
+              title: res.data.message,
+              icon: 'error',
+              showCancelButton: true,
+              cancelButtonText: '取消',
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     delCartItem(id) {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
       this.$swal({
@@ -198,8 +223,9 @@ export default {
           this.$http.delete(url).then((res) => {
             if (res.data.success) {
               this.isLoading = false;
-              this.$swal(res.data.message, '', 'success');
               this.getCart();
+              emitter.emit('update-cart');
+              this.$swal(res.data.message, '', 'success');
             } else {
               this.$swal({
                 title: res.data.message,
@@ -228,6 +254,7 @@ export default {
               this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
               this.getCart();
+              emitter.emit('update-cart');
             } else {
               this.isLoading = false;
               this.$swal({

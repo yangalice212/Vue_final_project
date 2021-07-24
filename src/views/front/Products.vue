@@ -1,11 +1,25 @@
 <template>
-  <Loading :isLoading="isLoading"/>
-  <div class="container">
+  <Loading :isLoading="isLoading" />
+  <div class="container my-5">
     <div class="row">
-      <div class="col-md-3"></div>
+      <div class="col-md-3">
+        <div class="list-group">
+          <a href="#"
+            class="list-group-item list-group-item-action border-0 border-bottom"
+            @click.prevent="selectCategory = item"
+            >所有產品</a
+          >
+          <a href="#"
+            class="list-group-item list-group-item-action border-0 border-bottom"
+            v-for="item in categories" :key="item.id"
+            @click.prevent="selectCategory = item"
+            >{{ item }}</a
+          >
+        </div>
+      </div>
       <div class="col-md-9">
         <ul class="list-unstyled row">
-          <li v-for="item in products" :key="item.id" class="col-md-6 mb-4">
+          <li v-for="item in filterProducts" :key="item.id" class="col-md-6 mb-4">
             <a class="productImg" href="" @click.prevent="getProduct(item.id)">
               <div
                 style="
@@ -35,10 +49,7 @@
           </li>
         </ul>
         <div class="d-flex justify-content-center">
-          <Pagination
-            :page="pagination"
-            @get-data="getProducts"
-          ></Pagination>
+          <Pagination :page="pagination" @get-data="getProducts"></Pagination>
         </div>
       </div>
     </div>
@@ -47,6 +58,7 @@
 
 <script>
 import Pagination from '@/components/Pagination.vue';
+import emitter from '../../assets/js/emitter';
 
 export default {
   name: 'Products',
@@ -56,6 +68,8 @@ export default {
       isLoading: false,
       product: {},
       pagination: {},
+      categories: [],
+      selectCategory: '',
     };
   },
   components: {
@@ -74,6 +88,7 @@ export default {
           if (res.data.success) {
             this.products = res.data.products;
             this.pagination = res.data.pagination;
+            this.getCategories();
             this.isLoading = false;
           } else {
             this.$swal({
@@ -91,6 +106,13 @@ export default {
     getProduct(id) {
       this.$router.push(`/product/${id}`);
     },
+    getCategories() {
+      const categories = new Set();
+      this.products.forEach((item) => {
+        categories.add(item.category);
+      });
+      this.categories = [...categories];
+    },
     addCart(id, qty = 1) {
       this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
@@ -101,9 +123,9 @@ export default {
       this.$http
         .post(url, { data: cart })
         .then((res) => {
-          console.log(res);
           if (res.data.success) {
             this.isLoading = false;
+            emitter.emit('update-cart');
             this.$swal({
               icon: 'success',
               title: res.data.message,
@@ -138,6 +160,11 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+    },
+  },
+  computed: {
+    filterProducts() {
+      return this.products.filter((item) => item.category.match(this.selectCategory));
     },
   },
 };
