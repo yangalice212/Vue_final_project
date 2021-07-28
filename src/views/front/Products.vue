@@ -145,7 +145,6 @@ export default {
       this.$http
         .post(url, id)
         .then((res) => {
-          console.log(res);
           if (res.data.success) {
             this.isLoading = false;
             this.$swal({

@@ -80,7 +80,9 @@ export default {
   data() {
     return {
       coupons: [],
-      tempCoupon: {},
+      tempCoupon: {
+        is_enabled: false,
+      },
       pagination: {},
       isNew: false,
       isLoading: false,
@@ -100,7 +102,7 @@ export default {
       switch (status) {
         case 'new':
           this.isNew = true;
-          this.tempCoupon = { due_date: new Date().getTime() / 1000 };
+          this.tempCoupon = { due_date: new Date().getTime() / 1000, is_enabled: 0 };
           couponModal.openModal();
           break;
         case 'edit':
@@ -134,7 +136,9 @@ export default {
       this.$http[method](url, { data: this.tempCoupon })
         .then((res) => {
           if (res.data.success) {
-            alert(res.data.message);
+            this.$swal({
+              title: res.data.message,
+            });
             this.getCoupons();
             couponModal.hideModal();
             this.isLoading = false;
@@ -162,7 +166,7 @@ export default {
             if (res.data.success) {
               this.isLoading = false;
               this.$swal(res.data.message, '', 'success');
-              this.getProducts();
+              this.getCoupons();
             } else {
               this.$swal({
                 title: res.data.message,

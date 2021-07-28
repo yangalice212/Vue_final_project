@@ -107,7 +107,6 @@ export default {
   methods: {
     getProducts(page = 1) {
       this.isLoading = true;
-      console.log(this.isLoading);
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
       this.$http.get(url)
         .then((res) => {

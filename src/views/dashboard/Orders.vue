@@ -44,7 +44,7 @@
                 等待付款中
               </div>
               <div
-                v-if="item.is_paid  && item.status !== 'finish'  && item.status !== 'cancel'"
+                v-if="item.is_paid && item.status !== 'finish'  && item.status !== 'cancel'"
                 class="btn btn-sm btn-outline-primary"
                 @click="openModal(item, 'status')"
               >
@@ -203,6 +203,7 @@ export default {
             orderModal.hideModal();
             statusModal.hideModal();
             this.getOrders();
+            console.log(item.status);
             this.isLoading = false;
           } else {
             this.$swal({

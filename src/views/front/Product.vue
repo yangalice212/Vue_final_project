@@ -81,7 +81,6 @@ export default {
       this.$http
         .post(url, { data: cart })
         .then((res) => {
-          console.log(res);
           if (res.data.success) {
             this.isLoading = false;
             this.$swal({

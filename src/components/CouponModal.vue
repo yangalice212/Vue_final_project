@@ -96,7 +96,9 @@ export default {
     coupon: {
       type: Object,
       default() {
-        return {};
+        return {
+
+        };
       },
     },
     isNew: {
@@ -106,7 +108,9 @@ export default {
   },
   data() {
     return {
-      tempCoupon: {},
+      tempCoupon: {
+
+      },
       due_date: '',
     };
   },
