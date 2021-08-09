@@ -1,3 +1,4 @@
 module.exports = {
-  publicPath: '/Vue_final_project/dist/',
+  publicPath: '/Vue_final_project/',
+  parallel: false,
 };
