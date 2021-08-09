@@ -30,12 +30,7 @@
       </div>
       <div class="col-md-6">
         <h2 class="mb-3">訂購人資料</h2>
-        <Form
-          ref="form"
-          v-slot="{ errors }"
-          v-if="form.user"
-          @submit="onSubmit"
-        >
+        <Form ref="form" v-slot="{ errors }" v-if="form.user" @submit="onSubmit">
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <Field
@@ -48,8 +43,7 @@
               rules="email|required"
               v-model="form.user.email"
             ></Field>
-            <error-message name="email" class="invalid-feedback">
-            </error-message>
+            <error-message name="email" class="invalid-feedback"> </error-message>
           </div>
 
           <div class="mb-3">
@@ -64,10 +58,7 @@
               rules="required"
               v-model="form.user.name"
             ></Field>
-            <error-message
-              name="姓名"
-              class="invalid-feedback"
-            ></error-message>
+            <error-message name="姓名" class="invalid-feedback"></error-message>
           </div>
 
           <div class="mb-3">
@@ -82,10 +73,7 @@
               :rules="isPhone"
               v-model="form.user.tel"
             ></Field>
-            <error-message
-              name="電話"
-              class="invalid-feedback"
-            ></error-message>
+            <error-message name="電話" class="invalid-feedback"></error-message>
           </div>
 
           <div class="mb-3">
@@ -100,10 +88,7 @@
               rules="required"
               v-model="form.user.address"
             ></Field>
-            <error-message
-              name="地址"
-              class="invalid-feedback"
-            ></error-message>
+            <error-message name="地址" class="invalid-feedback"></error-message>
           </div>
 
           <div class="mb-3">
@@ -122,9 +107,7 @@
         </Form>
       </div>
       <div class="d-flex justify-content-between">
-        <router-link class="btn btn-outline-secondary" to="/cart"
-          >上一步</router-link
-        >
+        <router-link class="btn btn-outline-secondary" to="/cart">上一步</router-link>
       </div>
     </div>
   </div>
@@ -194,7 +177,10 @@ export default {
               confirmButtonText: '確定',
             }).then((result) => {
               if (result.isConfirmed) {
-                this.$router.push({ name: 'check', params: { order: res.data.orderId } });
+                this.$router.push({
+                  name: 'check',
+                  params: { order: res.data.orderId },
+                });
               }
             });
           } else {

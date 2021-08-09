@@ -97,8 +97,7 @@
           </tfoot>
         </table>
         <div class="text-end">
-          <button @click="goPay" class="btn btn-outline-primary"
-            >結帳去</button>
+          <button @click="goPay" class="btn btn-outline-primary">結帳去</button>
         </div>
       </div>
     </div>
@@ -106,9 +105,7 @@
       <h3>目前購物車是空的哦～</h3>
     </div>
     <div class="text-center">
-      <router-link
-        to="/products"
-        class="btn btn-primary">
+      <router-link to="/products" class="btn btn-primary">
         繼續購物
       </router-link>
     </div>
@@ -191,7 +188,8 @@ export default {
     useCoupon(code) {
       this.couponCode = code;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`;
-      this.$http.post(url, { data: { code } })
+      this.$http
+        .post(url, { data: { code } })
         .then((res) => {
           if (res.data.success) {
             this.getCart();

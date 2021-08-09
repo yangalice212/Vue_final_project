@@ -85,14 +85,12 @@ export default {
         if (!this.tempOrder.paid_date) {
           this.tempOrder.paid_date = Math.round(new Date().getTime() / 1000);
         }
-      }
-      if (status === 'wait') {
+      } else if (status === 'wait') {
         this.tempOrder.is_paid = false;
         this.tempOrder.paid_date = null;
       }
       this.$emit('emit-status', this.tempOrder);
     },
   },
-
 };
 </script>

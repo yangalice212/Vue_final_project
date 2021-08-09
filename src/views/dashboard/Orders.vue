@@ -1,12 +1,8 @@
 <template>
-  <Loading :isLoading="isLoading"/>
+  <Loading :isLoading="isLoading" />
   <div class="container">
     <div class="text-end my-4">
-      <button
-        type="button"
-        class="btn btn-outline-danger"
-        @click.prevent="delAllOrders"
-      >
+      <button type="button" class="btn btn-outline-danger" @click.prevent="delAllOrders">
         刪除全部訂單
       </button>
     </div>
@@ -16,9 +12,15 @@
           <tr>
             <th>購買時間</th>
             <th>訂單編號</th>
-            <th class="d-none d-md-table-cell">購買人姓名</th>
-            <th class="d-none d-md-table-cell">購買人電話</th>
-            <th class="d-none d-md-table-cell">應付金額</th>
+            <th class="d-none d-md-table-cell">
+              購買人姓名
+            </th>
+            <th class="d-none d-md-table-cell">
+              購買人電話
+            </th>
+            <th class="d-none d-md-table-cell">
+              應付金額
+            </th>
             <th>訂單狀態</th>
             <th>查看訂單</th>
             <th>編輯 / 刪除</th>
@@ -27,14 +29,20 @@
         <tbody>
           <tr v-for="item in orders" :key="item.id">
             <td>
-              {{ new Date(item.create_at * 1000).toISOString().split("T")[0] }}
+              {{ new Date(item.create_at * 1000).toISOString().split('T')[0] }}
             </td>
             <td>
               {{ item.id }}
             </td>
-            <td class="d-none d-md-table-cell">{{ item.user.name }}</td>
-            <td class="d-none d-md-table-cell">{{ item.user.tel }}</td>
-            <td class="d-none d-md-table-cell">{{ item.total }}</td>
+            <td class="d-none d-md-table-cell">
+              {{ item.user.name }}
+            </td>
+            <td class="d-none d-md-table-cell">
+              {{ item.user.tel }}
+            </td>
+            <td class="d-none d-md-table-cell">
+              {{ item.total }}
+            </td>
             <td>
               <div
                 v-if="!item.is_paid && item.status !== 'cancel'"
@@ -44,7 +52,9 @@
                 等待付款中
               </div>
               <div
-                v-if="item.is_paid && item.status !== 'finish'  && item.status !== 'cancel'"
+                v-if="
+                  item.is_paid && item.status !== 'finish' && item.status !== 'cancel'
+                "
                 class="btn btn-sm btn-outline-primary"
                 @click="openModal(item, 'status')"
               >
@@ -95,23 +105,16 @@
         </tbody>
       </table>
     </div>
-
   </div>
   <div class="d-flex justify-content-center">
-    <Pagination
-      :page="pagination"
-      @get-data="getOrders"
-    ></Pagination>
+    <Pagination :page="pagination" @get-data="getOrders"></Pagination>
   </div>
   <OrderModal
     :order="tempOrder"
     @update-order="updateOrder"
     ref="orderModal"
   ></OrderModal>
-  <DetailModal
-    :order="tempOrder"
-    ref="detailModal"
-  ></DetailModal>
+  <DetailModal :order="tempOrder" ref="detailModal"></DetailModal>
   <StatusModal
     :order="tempOrder"
     :status="status"
@@ -151,17 +154,16 @@ export default {
     getOrders(page = 1) {
       this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`;
-      this.$http
-        .get(url)
-        .then((res) => {
-          if (res.data.success) {
-            this.orders = res.data.orders;
-            this.pagination = res.data.pagination;
-            this.isLoading = false;
-          } else {
-            alert(res.data.message);
-          }
-        });
+      this.$http.get(url).then((res) => {
+        if (res.data.success) {
+          this.orders = res.data.orders;
+          this.pagination = res.data.pagination;
+          this.isLoading = false;
+          console.log(this.tempOrder);
+        } else {
+          alert(res.data.message);
+        }
+      });
     },
     openModal(item, modal) {
       const { orderModal, detailModal, statusModal } = this.$refs;
@@ -175,8 +177,8 @@ export default {
           break;
         case 'status':
           if (item.status) {
+            console.log(item.status);
             this.status = item.status;
-            console.log(item.is_paid);
           } else {
             if (item.is_paid) {
               this.status = 'handle';
@@ -194,16 +196,17 @@ export default {
       const { orderModal, statusModal } = this.$refs;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${item.id}`;
 
-      this.$http.put(url, { data: this.tempOrder })
+      this.$http
+        .put(url, { data: this.tempOrder })
         .then((res) => {
           if (res.data.success) {
             this.$swal({
+              icon: 'success',
               title: res.data.message,
             });
             orderModal.hideModal();
             statusModal.hideModal();
             this.getOrders();
-            console.log(item.status);
             this.isLoading = false;
           } else {
             this.$swal({

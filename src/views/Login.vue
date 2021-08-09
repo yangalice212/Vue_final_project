@@ -2,7 +2,7 @@
   <div class="container mt-5">
     <form class="row justify-content-center" @submit.prevent="login">
       <div class="col-md-4">
-        <img src="" alt="">
+        <img src="" alt="" />
         <h1 class="h2 mb-4 text-center">後台管理系統</h1>
         <div>
           <!-- <label for="inputEmail" class="sr-only">Email address</label> -->
@@ -67,7 +67,8 @@ export default {
 </script>
 
 <style lang="scss">
-  input[type="email"], input[type="password"] {
-    padding: 10px;
-  }
+input[type='email'],
+input[type='password'] {
+  padding: 10px;
+}
 </style>

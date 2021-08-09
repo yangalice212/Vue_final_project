@@ -1,5 +1,5 @@
 <template>
-  <Loading :isLoading="isLoading"/>
+  <Loading :isLoading="isLoading" />
   <div class="container">
     <div class="text-end my-4">
       <button
@@ -28,7 +28,9 @@
           <tr v-for="item in coupons" :key="item.id">
             <td>{{ item.title }}</td>
             <td>{{ item.percent }}%</td>
-            <td>{{ new Date(item.due_date * 1000).toISOString().split("T")[0] }}</td>
+            <td>
+              {{ new Date(item.due_date * 1000).toISOString().split('T')[0] }}
+            </td>
             <td>
               <span v-if="item.is_enabled" class="text-success">啟用</span>
               <span v-else>未啟用</span>
@@ -55,20 +57,16 @@
         </tbody>
       </table>
     </div>
-
   </div>
   <div class="d-flex justify-content-center">
-    <Pagination
-      :page="pagination"
-      @get-data="getCoupons"
-    ></Pagination>
+    <Pagination :page="pagination" @get-data="getCoupons"></Pagination>
   </div>
   <CouponModal
     :coupon="tempCoupon"
     :is-new="isNew"
     @update-coupon="updateCoupon"
     ref="couponModal"
-    ></CouponModal>
+  ></CouponModal>
 </template>
 
 <script>
@@ -102,7 +100,10 @@ export default {
       switch (status) {
         case 'new':
           this.isNew = true;
-          this.tempCoupon = { due_date: new Date().getTime() / 1000, is_enabled: 0 };
+          this.tempCoupon = {
+            due_date: new Date().getTime() / 1000,
+            is_enabled: 0,
+          };
           couponModal.openModal();
           break;
         case 'edit':

@@ -15,9 +15,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <router-link to="/admin/products" class="nav-link"
-            >Products</router-link
-          >
+          <router-link to="/admin/products" class="nav-link">Products</router-link>
           <router-link to="/admin/orders" class="nav-link">Orders</router-link>
           <router-link to="/admin/coupon" class="nav-link">Coupon</router-link>
           <router-link to="/" class="nav-link">Front</router-link>

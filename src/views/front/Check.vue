@@ -15,14 +15,14 @@
       <p class="col-8 mb-4 pb-4 border-bottom">{{ order?.user?.email }}</p>
       <p class="col-4 fw-bold mb-4 pb-4 border-bottom">地址：</p>
       <p class="col-8 mb-4 pb-4 border-bottom">{{ order?.user?.address }}</p>
-      <p v-if="order?.message" class="col-4 fw-bold mb-4 pb-4 border-bottom">備註：</p>
-      <p v-if="order?.message" class="col-8 mb-4 pb-4 border-bottom">{{ order?.message }}</p>
-      <p class="col-4 fw-bold mb-4 pb-4 border-bottom">訂單金額：</p>
-      <p
-        class="col-8 mb-4 pb-4 border-bottom "
-      >
-        NT${{ order.total }}
+      <p v-if="order?.message" class="col-4 fw-bold mb-4 pb-4 border-bottom">
+        備註：
       </p>
+      <p v-if="order?.message" class="col-8 mb-4 pb-4 border-bottom">
+        {{ order?.message }}
+      </p>
+      <p class="col-4 fw-bold mb-4 pb-4 border-bottom">訂單金額：</p>
+      <p class="col-8 mb-4 pb-4 border-bottom ">NT${{ order.total }}</p>
       <div class="text-center">
         <button type="button" class="btn btn-primary w-25" @click="pay(orderID)">
           確認結帳
@@ -71,7 +71,10 @@ export default {
           if (res.data.success) {
             console.log(res);
             this.order = res.data.order;
-            this.$router.push({ name: 'finish', params: { order: this.orderID } });
+            this.$router.push({
+              name: 'finish',
+              params: { order: this.orderID },
+            });
             this.isLoading = false;
           } else {
             alert(res.data.message);

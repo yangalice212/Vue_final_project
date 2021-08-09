@@ -1,5 +1,5 @@
 <template>
-  <Loading :isLoading="isLoading"/>
+  <Loading :isLoading="isLoading" />
   <div class="container my-5">
     <div class="row">
       <div class="col-md-7">
@@ -17,9 +17,7 @@
           <li class="h3">
             {{ product.title }}
           </li>
-          <li class="h4">
-            NT$ {{ product.price }}
-          </li>
+          <li class="h4">NT$ {{ product.price }}</li>
           <li>
             {{ product.content }}
           </li>
@@ -33,22 +31,26 @@
             type="button"
             @click="minusQty"
             :disabled="qty <= 1"
-          >-</button>
+          >
+            -
+          </button>
           <input
             class="text-center quantity w-100 text-lg"
             type="number"
             min="1"
             v-model="qty"
           />
-          <button type="button"
+          <button
+            type="button"
             class="btn btn-outline-secondary plus text-xl"
-            @click="addQty">+</button>
+            @click="addQty"
+          >
+            +
+          </button>
         </div>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="addCart(product.id, qty)"
-          >加入購物車</button>
+        <button type="button" class="btn btn-primary" @click="addCart(product.id, qty)">
+          加入購物車
+        </button>
       </div>
     </div>
   </div>

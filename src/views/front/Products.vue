@@ -4,14 +4,17 @@
     <div class="row">
       <div class="col-md-3">
         <div class="list-group">
-          <a href="#"
+          <a
+            href="#"
             class="list-group-item list-group-item-action border-0 border-bottom"
             @click.prevent="selectCategory = item"
             >所有產品</a
           >
-          <a href="#"
+          <a
+            href="#"
             class="list-group-item list-group-item-action border-0 border-bottom"
-            v-for="item in categories" :key="item.id"
+            v-for="item in categories"
+            :key="item.id"
             @click.prevent="selectCategory = item"
             >{{ item }}</a
           >
@@ -79,9 +82,9 @@ export default {
     this.getProducts();
   },
   methods: {
-    getProducts(page = 1) {
+    getProducts() {
       this.isLoading = true;
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products?page=${page}`;
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products`;
       this.$http
         .get(url)
         .then((res) => {

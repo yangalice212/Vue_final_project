@@ -1,5 +1,5 @@
 <template>
-  <Loading :isLoading="isLoading"/>
+  <Loading :isLoading="isLoading" />
   <div class="container">
     <div class="text-end my-4">
       <button
@@ -17,7 +17,9 @@
       <table class="table" style="min-width: 600px;">
         <thead>
           <tr>
-            <th class="d-none d-md-table-cell">產品圖片</th>
+            <th class="d-none d-md-table-cell">
+              產品圖片
+            </th>
             <th>產品名稱</th>
             <th>原價</th>
             <th>售價</th>
@@ -29,13 +31,15 @@
           <tr v-for="item in products" :key="item.id">
             <td class="d-none d-md-table-cell">
               <div
-                  style="
+                style="
                     height: 100px;
                     background-size: cover;
                     background-position: center;
                   "
-                  :style="{ 'background-image': `url(${item.imageUrl})` }"
-                ></div>
+                :style="{
+                  'background-image': `url(${item.imageUrl})`,
+                }"
+              ></div>
             </td>
             <td>{{ item.title }}</td>
             <td>NT$ {{ item.price }}</td>
@@ -66,20 +70,16 @@
         </tbody>
       </table>
     </div>
-
   </div>
   <div class="d-flex justify-content-center">
-    <Pagination
-      :page="pagination"
-      @get-data="getProducts"
-    ></Pagination>
+    <Pagination :page="pagination" @get-data="getProducts"></Pagination>
   </div>
   <ProductModal
     :product="tempProduct"
     :is-new="isNew"
     @update-product="updateProduct"
     ref="productModal"
-    ></ProductModal>
+  ></ProductModal>
 </template>
 
 <script>
@@ -108,7 +108,8 @@ export default {
     getProducts(page = 1) {
       this.isLoading = true;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
-      this.$http.get(url)
+      this.$http
+        .get(url)
         .then((res) => {
           if (res.data.success) {
             this.products = res.data.products;
@@ -122,7 +123,8 @@ export default {
               cancelButtonText: '取消',
             });
           }
-        }).catch((err) => {
+        })
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -149,7 +151,9 @@ export default {
       const id = this.isNew ? '' : `${this.tempProduct.id}`;
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${id}`;
 
-      this.$http[method](url, { data: this.tempProduct })
+      this.$http[method](url, {
+        data: this.tempProduct,
+      })
         .then((res) => {
           if (res.data.success) {
             this.$swal({
